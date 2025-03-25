@@ -5,8 +5,10 @@ defmodule ShortUrlWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/api", ShortUrlWeb do
+  scope "/", ShortUrlWeb do
     pipe_through :api
+
+    post "/shorten_url", ShortUrlController, :shorten
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
