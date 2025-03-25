@@ -7,11 +7,12 @@ defmodule ShortUrlWeb.ShortUrlControllerTest do
   end
 
   test "POST /shorten_url returns a shortened url", %{conn: conn} do
+    :rand.seed(:exsss, {100, 101, 102})
     conn = post(conn, ~p"/shorten_url", %{"url" => "http://very-long-url.com"})
 
     assert json_response(conn, 200) == %{
              "url" => "http://very-long-url.com",
-             "short_url" => "http://localhost:4000/abc123"
+             "short_url" => "http://localhost:4000/w"
            }
   end
 end
