@@ -5,6 +5,8 @@ defmodule ShortUrlWeb.Router do
     plug :accepts, ["json"]
   end
 
+  # Since the spec doesn't define the routes to go through /api I've
+  # scoped the api routes to be directly accessed through the root.
   scope "/", ShortUrlWeb do
     pipe_through :api
 
