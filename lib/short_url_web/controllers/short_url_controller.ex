@@ -2,8 +2,6 @@ defmodule ShortUrlWeb.ShortUrlController do
   use ShortUrlWeb, :controller
 
   def shorten(conn, params) do
-    IO.inspect(params, label: "controller params")
-
     case ShortUrl.ShortUrls.create_url(params) do
       {:ok, url} ->
         json(conn, %{

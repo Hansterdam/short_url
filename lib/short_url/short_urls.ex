@@ -37,24 +37,11 @@ defmodule ShortUrl.ShortUrls do
 
   """
   def create_url(attrs \\ %{}) do
-    IO.inspect(attrs, label: "Initial attrs")
+    attrs = Map.put(attrs, "short_key", generate_short_key())
 
-    attrs_with_short_key = Map.put(attrs, "short_key", generate_short_key())
-    IO.inspect(attrs_with_short_key, label: "attrs with short_key")
-
-    changeset = %Url{} |> Url.changeset(attrs_with_short_key)
-    IO.inspect(changeset, label: "Changeset before insert")
-
-    result = Repo.insert(changeset)
-    IO.inspect(result, label: "Insert result")
-
-    result
-    # IO.inspect(attrs, label: "url attributes")
-    # attrs = Map.put(attrs, "short_key", generate_short_key())
-
-    # %Url{}
-    # |> Url.changeset(attrs)
-    # |> Repo.insert()
+    %Url{}
+    |> Url.changeset(attrs)
+    |> Repo.insert()
   end
 
   defp generate_short_key do

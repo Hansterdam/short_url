@@ -16,11 +16,11 @@ defmodule ShortUrlWeb.ShortUrlControllerTest do
            }
   end
 
-  # test "POST /shorten_url with non-link gives a validation error", %{conn: conn} do
-  #   conn = post(conn, ~p"/shorten_url", %{"url" => "actually not a url"})
+  test "POST /shorten_url with non-link gives a validation error", %{conn: conn} do
+    conn = post(conn, ~p"/shorten_url", %{"url" => "actually not a url"})
 
-  #   assert json_response(conn, 422) == %{
-  #            "errors" => %{"url" => ["has invalid format"]}
-  #          }
-  # end
+    assert json_response(conn, 422) == %{
+             "errors" => %{"url" => ["has invalid format"]}
+           }
+  end
 end
