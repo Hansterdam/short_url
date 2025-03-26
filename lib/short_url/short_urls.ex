@@ -9,19 +9,6 @@ defmodule ShortUrl.ShortUrls do
   alias ShortUrl.ShortUrls.Url
 
   @doc """
-  Returns the list of urls.
-
-  ## Examples
-
-      iex> list_urls()
-      [%Url{}, ...]
-
-  """
-  def list_urls do
-    Repo.all(Url)
-  end
-
-  @doc """
   Gets a single url.
 
   Raises `Ecto.NoResultsError` if the Url does not exist.
@@ -50,55 +37,37 @@ defmodule ShortUrl.ShortUrls do
 
   """
   def create_url(attrs \\ %{}) do
-    %Url{}
-    |> Url.changeset(attrs)
-    |> Repo.insert()
+    IO.inspect(attrs, label: "Initial attrs")
+
+    attrs_with_short_key = Map.put(attrs, "short_key", generate_short_key())
+    IO.inspect(attrs_with_short_key, label: "attrs with short_key")
+
+    changeset = %Url{} |> Url.changeset(attrs_with_short_key)
+    IO.inspect(changeset, label: "Changeset before insert")
+
+    result = Repo.insert(changeset)
+    IO.inspect(result, label: "Insert result")
+
+    result
+    # IO.inspect(attrs, label: "url attributes")
+    # attrs = Map.put(attrs, "short_key", generate_short_key())
+
+    # %Url{}
+    # |> Url.changeset(attrs)
+    # |> Repo.insert()
   end
 
-  @doc """
-  Updates a url.
+  defp generate_short_key do
+    key_length = 6
 
-  ## Examples
-
-      iex> update_url(url, %{field: new_value})
-      {:ok, %Url{}}
-
-      iex> update_url(url, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_url(%Url{} = url, attrs) do
-    url
-    |> Url.changeset(attrs)
-    |> Repo.update()
-  end
-
-  @doc """
-  Deletes a url.
-
-  ## Examples
-
-      iex> delete_url(url)
-      {:ok, %Url{}}
-
-      iex> delete_url(url)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_url(%Url{} = url) do
-    Repo.delete(url)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking url changes.
-
-  ## Examples
-
-      iex> change_url(url)
-      %Ecto.Changeset{data: %Url{}}
-
-  """
-  def change_url(%Url{} = url, attrs \\ %{}) do
-    Url.changeset(url, attrs)
+    for _ <- 1..key_length do
+      case :rand.uniform(2) do
+        # 48-57 -> 0-9
+        1 -> :rand.uniform(10) + 47
+        # 97-122 -> a-z
+        2 -> :rand.uniform(26) + 96
+      end
+    end
+    |> to_string()
   end
 end

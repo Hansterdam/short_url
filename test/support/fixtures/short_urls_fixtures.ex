@@ -11,7 +11,7 @@ defmodule ShortUrl.ShortUrlsFixtures do
     {:ok, url} =
       attrs
       |> Enum.into(%{
-        original_url: "some original_url",
+        url: "some url",
         short_key: "some short_key"
       })
       |> ShortUrl.ShortUrls.create_url()

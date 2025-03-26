@@ -5,7 +5,7 @@ defmodule ShortUrl.ShortUrls.Url do
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   schema "urls" do
-    field :original_url, :string
+    field :url, :string
     field :short_key, :string
 
     timestamps(type: :utc_datetime)
@@ -14,7 +14,8 @@ defmodule ShortUrl.ShortUrls.Url do
   @doc false
   def changeset(url, attrs) do
     url
-    |> cast(attrs, [:original_url, :short_key])
-    |> validate_required([:original_url, :short_key])
+    |> cast(attrs, [:url, :short_key])
+    |> validate_required([:url, :short_key])
+    |> validate_format(:url, ~r(^https?://))
   end
 end

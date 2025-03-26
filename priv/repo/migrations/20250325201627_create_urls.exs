@@ -4,7 +4,7 @@ defmodule ShortUrl.Repo.Migrations.CreateUrls do
   def change do
     create table(:urls, primary_key: false) do
       add :id, :binary_id, primary_key: true
-      add :original_url, :string
+      add :url, :string
       add :short_key, :string
 
       timestamps(type: :utc_datetime)
