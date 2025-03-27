@@ -8,6 +8,8 @@ defmodule ShortUrl.ShortUrls do
 
   alias ShortUrl.ShortUrls.Url
 
+  @max_attempts 5
+
   def get_url_by_short_key(short_key) do
     Repo.get_by(Url, short_key: short_key)
   end
@@ -16,30 +18,34 @@ defmodule ShortUrl.ShortUrls do
     Repo.get_by(Url, url: url)
   end
 
-  @doc """
-  Creates a url.
-
-  ## Examples
-
-      iex> create_url(%{field: value})
-      {:ok, %Url{}}
-
-      iex> create_url(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
   def create_url(attrs \\ %{}) do
+    # First check if the url was already used and and return that one
     case get_url_by_url(attrs["url"]) do
       %Url{} = existing_url ->
         {:ok, existing_url}
 
       nil ->
-        attrs = Map.put(attrs, "short_key", generate_short_key())
-
-        %Url{}
-        |> Url.changeset(attrs)
-        |> Repo.insert()
+        create_url_with_unique_short_key(attrs, attempts: @max_attempts)
     end
+  end
+
+  defp create_url_with_unique_short_key(attrs, attempts: attempts) when attempts > 0 do
+    short_key = generate_short_key()
+
+    if get_url_by_short_key(short_key) do
+      create_url_with_unique_short_key(attrs, attempts: attempts - 1)
+    else
+      attrs = Map.put(attrs, "short_key", short_key)
+
+      %Url{}
+      |> Url.changeset(attrs)
+      |> Repo.insert()
+    end
+  end
+
+  defp create_url_with_unique_short_key(_attrs, attempts: 0) do
+    # Raise an exception after too many failed attempts
+    raise "Failed to generate a unique short key after multiple attempts"
   end
 
   defp generate_short_key do
