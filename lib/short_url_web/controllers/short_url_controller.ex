@@ -7,7 +7,7 @@ defmodule ShortUrlWeb.ShortUrlController do
       {:ok, url} ->
         json(conn, %{
           "url" => url.url,
-          "short_url" => "http://localhost:4000/" <> url.short_key
+          "short_url" => "http://localhost/" <> url.short_key
         })
 
       {:error, changeset} ->

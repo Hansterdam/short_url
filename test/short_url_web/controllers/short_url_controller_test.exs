@@ -3,9 +3,9 @@ defmodule ShortUrlWeb.ShortUrlControllerTest do
 
   import ShortUrl.ShortUrlsFixtures
 
-  test "GET /shorten_url returns a 404", %{conn: conn} do
+  test "GET /shorten_url returns a 405", %{conn: conn} do
     conn = get(conn, ~p"/shorten_url")
-    assert json_response(conn, 404) == %{"errors" => %{"detail" => "Not Found"}}
+    assert json_response(conn, 405) == %{"errors" => %{"detail" => "Method Not Allowed"}}
   end
 
   test "POST /shorten_url with non-link gives a validation error", %{conn: conn} do
