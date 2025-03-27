@@ -8,22 +8,12 @@ defmodule ShortUrl.ShortUrls do
 
   alias ShortUrl.ShortUrls.Url
 
-  @doc """
-  Gets a single url.
-
-  Raises `Ecto.NoResultsError` if the Url does not exist.
-
-  ## Examples
-
-      iex> get_url!(123)
-      %Url{}
-
-      iex> get_url!(456)
-      ** (Ecto.NoResultsError)
-
-  """
   def get_url_by_short_key(short_key) do
     Repo.get_by(Url, short_key: short_key)
+  end
+
+  def get_url_by_url(url) do
+    Repo.get_by(Url, url: url)
   end
 
   @doc """
@@ -39,11 +29,17 @@ defmodule ShortUrl.ShortUrls do
 
   """
   def create_url(attrs \\ %{}) do
-    attrs = Map.put(attrs, "short_key", generate_short_key())
+    case get_url_by_url(attrs["url"]) do
+      %Url{} = existing_url ->
+        {:ok, existing_url}
 
-    %Url{}
-    |> Url.changeset(attrs)
-    |> Repo.insert()
+      nil ->
+        attrs = Map.put(attrs, "short_key", generate_short_key())
+
+        %Url{}
+        |> Url.changeset(attrs)
+        |> Repo.insert()
+    end
   end
 
   defp generate_short_key do

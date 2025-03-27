@@ -33,5 +33,11 @@ defmodule ShortUrl.ShortUrlsTest do
     test "create_url/1 with invalid data returns error changeset" do
       assert {:error, %Ecto.Changeset{}} = ShortUrls.create_url(@invalid_attrs)
     end
+
+    test "create_url/1 with existing url, returns existing record" do
+      existing_url = url_fixture()
+      url_response = ShortUrls.create_url(%{"url" => existing_url.url})
+      assert {:ok, existing_url} == url_response
+    end
   end
 end
