@@ -2,6 +2,9 @@ defmodule ShortUrlWeb.AllowedMethodsPlug do
   import Plug.Conn
   import Phoenix.Controller
 
+  # I've added this plug because I wasn't happy with the out-of-the-box
+  # handling of not allowed methods (just a 404), so I wanted that to be
+  # properly communicated through the api
   def init(opts) do
     opts
   end
