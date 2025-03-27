@@ -22,7 +22,9 @@ defmodule ShortUrl.ShortUrls do
       ** (Ecto.NoResultsError)
 
   """
-  def get_url!(id), do: Repo.get!(Url, id)
+  def get_url_by_short_key(short_key) do
+    Repo.get_by(Url, short_key: short_key)
+  end
 
   @doc """
   Creates a url.

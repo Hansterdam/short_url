@@ -1,61 +1,37 @@
 defmodule ShortUrl.ShortUrlsTest do
   use ShortUrl.DataCase
 
-  # alias ShortUrl.ShortUrls
+  alias ShortUrl.ShortUrls
 
-  # describe "urls" do
-  #   alias ShortUrl.ShortUrls.Url
+  describe "urls" do
+    alias ShortUrl.ShortUrls.Url
 
-  #   import ShortUrl.ShortUrlsFixtures
+    import ShortUrl.ShortUrlsFixtures
 
-  #   @invalid_attrs %{url: nil, short_key: nil}
+    @invalid_attrs %{"url" => "not a url"}
 
-  #   test "list_urls/0 returns all urls" do
-  #     url = url_fixture()
-  #     assert ShortUrls.list_urls() == [url]
-  #   end
+    test "get_url_by_short_key/1 returns the url with given short key" do
+      url = url_fixture()
+      assert ShortUrls.get_url_by_short_key(url.short_key) == url
+    end
 
-  #   test "get_url!/1 returns the url with given id" do
-  #     url = url_fixture()
-  #     assert ShortUrls.get_url!(url.id) == url
-  #   end
+    test "create_url/1 with valid data creates a url" do
+      :rand.seed(:exsss, {100, 101, 102})
+      valid_attrs = %{"url" => "https://very-long-url.com"}
 
-  #   test "create_url/1 with valid data creates a url" do
-  #     valid_attrs = %{url: "some url", short_key: "some short_key"}
+      assert {:ok, %Url{} = url} = ShortUrls.create_url(valid_attrs)
+      assert url.url == "https://very-long-url.com"
+      assert url.short_key == "g3cmz5"
+    end
 
-  #     assert {:ok, %Url{} = url} = ShortUrls.create_url(valid_attrs)
-  #     assert url.url == "some url"
-  #     assert url.short_key == "some short_key"
-  #   end
+    test "create_url/1 with http:// also works" do
+      valid_attrs = %{"url" => "http://not-secure_url.com"}
 
-  #   test "create_url/1 with invalid data returns error changeset" do
-  #     assert {:error, %Ecto.Changeset{}} = ShortUrls.create_url(@invalid_attrs)
-  #   end
+      assert {:ok, %Url{}} = ShortUrls.create_url(valid_attrs)
+    end
 
-  #   test "update_url/2 with valid data updates the url" do
-  #     url = url_fixture()
-  #     update_attrs = %{url: "some updated url", short_key: "some updated short_key"}
-
-  #     assert {:ok, %Url{} = url} = ShortUrls.update_url(url, update_attrs)
-  #     assert url.url == "some updated url"
-  #     assert url.short_key == "some updated short_key"
-  #   end
-
-  #   test "update_url/2 with invalid data returns error changeset" do
-  #     url = url_fixture()
-  #     assert {:error, %Ecto.Changeset{}} = ShortUrls.update_url(url, @invalid_attrs)
-  #     assert url == ShortUrls.get_url!(url.id)
-  #   end
-
-  #   test "delete_url/1 deletes the url" do
-  #     url = url_fixture()
-  #     assert {:ok, %Url{}} = ShortUrls.delete_url(url)
-  #     assert_raise Ecto.NoResultsError, fn -> ShortUrls.get_url!(url.id) end
-  #   end
-
-  #   test "change_url/1 returns a url changeset" do
-  #     url = url_fixture()
-  #     assert %Ecto.Changeset{} = ShortUrls.change_url(url)
-  #   end
-  # end
+    test "create_url/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = ShortUrls.create_url(@invalid_attrs)
+    end
+  end
 end

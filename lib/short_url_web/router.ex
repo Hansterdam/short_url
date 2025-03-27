@@ -10,7 +10,8 @@ defmodule ShortUrlWeb.Router do
   scope "/", ShortUrlWeb do
     pipe_through :api
 
-    post "/shorten_url", ShortUrlController, :shorten
+    get("/:short_key", ShortUrlController, :read)
+    post "/shorten_url", ShortUrlController, :create
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
