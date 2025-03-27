@@ -3,10 +3,16 @@ defmodule ShortUrlWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug ShortUrlWeb.AllowedMethodsPlug, %{"shorten_url" => ["POST"]}
   end
 
-  scope "/api", ShortUrlWeb do
+  # Since the spec doesn't define the routes to go through /api I've
+  # scoped the api routes to be directly accessed through the root.
+  scope "/", ShortUrlWeb do
     pipe_through :api
+
+    post "/shorten_url", ShortUrlController, :create
+    get("/:short_key", ShortUrlController, :read)
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
