@@ -39,5 +39,21 @@ defmodule ShortUrl.ShortUrlsTest do
       url_response = ShortUrls.create_url(%{"url" => existing_url.url})
       assert {:ok, existing_url} == url_response
     end
+
+    test "raise exception after 5 failed unique short_key attempts" do
+      :rand.seed(:exsss, {100, 101, 102})
+      url_fixture()
+      url_fixture(%{"url" => "https://number2.com"})
+      url_fixture(%{"url" => "https://number3.com"})
+      url_fixture(%{"url" => "https://number4.com"})
+      url_fixture(%{"url" => "https://number5.com"})
+      :rand.seed(:exsss, {100, 101, 102})
+
+      assert_raise(
+        RuntimeError,
+        "Failed to generate a unique short key after multiple attempts",
+        fn -> ShortUrls.create_url(%{"url" => "http://someplace.com"}) end
+      )
+    end
   end
 end
